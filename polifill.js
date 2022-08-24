@@ -34,18 +34,32 @@ function mapFunction(array, callback) {
 // console.log(mapFunction([1,2,3], ((item) => {return item * 2})))
 
 // .filter
-
-Array.prototype.myFilter = function(callback) {
-    const filterArray = [];
-    for(let i = 0; i < this.length; i++) {
-        if (callback(this[i], i, this)) {
-            filterArray.push(this[i]);
+if (!Array.prototype.myFilter) {
+    Array.prototype.myFilter = function(callback) {
+        if (!(this instanceof Array || this instanceof String)) {
+            throw new Error('Called on wrong type')
         }
+        if (typeof callback !== 'function') {
+            throw new Error(`${callback} is not a function`)
+        }
+    
+        const filterArray = [];
+        for(let i = 0; i < this.length; i++) {
+            if (callback(this[i], i, this)) {
+                filterArray.push(this[i]);
+            }
+        }
+        return filterArray;
     }
-    return filterArray;
 }
 
 function filterFunction(array, callback) {
+    if (!(array instanceof Array || array instanceof String)) {
+        throw new Error('Called on wrong type');
+    }
+    if (typeof callback !== 'function') {
+        throw new Error(`${callback} is not a function`);
+    }
     const filterArray = [];
     for(let i = 0; i < array.length; i++) {
         if (callback(array[i], i, array)) {
@@ -55,4 +69,5 @@ function filterFunction(array, callback) {
     return filterArray;
 }
 
-console.log(filterFunction([1,2,3,4,10], ((item) => {return item % 2 === 0})))
+// console.log(...filterFunction([1,2,3,4,10], ((item) => {return item % 2 === 0})))
+
