@@ -80,51 +80,81 @@ if (!Function.prototype.myCall) {
     }
 }
 
+if (!Array.prototype.myFlat) {
+    Array.prototype.myFlat = function(deep) {
+        if (!(this instanceof Array || this instanceof String)) {
+            throw new Error('Called on wrong type')
+        }
+        if (typeof deep !== 'number') {
+            throw new Error(`${deep} is not a number`)
+        }
+
+        const flatArr = [];
+        function flatter(deep, result) {
+            if (deep === -1) {
+                flatArr.push(result)
+                return;
+            }
+            for (let i = 0; i < result.length; i++) {
+                if (result[i] instanceof Array) flatter(deep - 1, result[i])
+                else {flatArr.push(result[i])}
+            } 
+        }
+        flatter(deep, this)
+        return flatArr;
+    }
+}
+
+function flatFunction(deep, array) {
+    if (!(array instanceof Array || array instanceof String)) {
+        throw new Error('Called on wrong type')
+    }
+    if (typeof deep !== 'number') {
+        throw new Error(`${deep} is not a number`)
+    }
+
+    const flatArr = [];
+    function flatter(deep, result) {
+        if (deep === -1) {
+            flatArr.push(result)
+            return;
+        }
+        for (let i = 0; i < result.length; i++) {
+            if (result[i] instanceof Array) flatter(deep - 1, result[i])
+            else {flatArr.push(result[i])}
+        } 
+    }
+    flatter(deep, array)
+    return flatArr;
+}
+
+// console.log(flatFunction(0, [[[1]],2,3]))
+
+// .reduce
+
+if (!Array.prototype.myReduce) {
+    Array.prototype.myReduce = function(cb = (item) => {return item}, initialValue) {
+        if (!(this instanceof Array || this instanceof String)) {
+            throw new Error('Called on wrong type')
+        }
+        let iterator = 0;
+        if (!initialValue) {
+            iterator = 1;
+            initialValue  = this[0]
+        }    
+
+        let accumulator = initialValue;
+
+        for (iterator; iterator < this.length; iterator++) {
+            accumulator += cb(this[iterator]);
+        }
+        return accumulator;
+    }
+}
+
 // .apply
 
 // .promise
-
-// let promise = new Promise((resolve, reject) => setTimeout(() => resolve(1000), 1000));
-
-// function PromisePolifill(url, method, body, executor) {
-//     return new PromisePolifill(null, null, null, (resolve, reject) => {
-//         let xhr = new XMLHttpRequest();
-
-//         xhr.open(method, url);
-    
-//         xhr.send();
-    
-//         xhr.onload = function() {
-//             resolve(`Load: ${xhr.response}`);
-//         };
-//         xhr.onerror = function() {
-//             reject(`Ошибка соединения`);
-//         }
-//     })
-// }
-
-// PromisePolifill('https://jsonplaceholder.typicode.com/todos/1', 'GET')
-
-// let xhr = new XMLHttpRequest();
-
-// xhr.open("GET", 'https://jsonplaceholder.typicode.com/todos/1')
-
-// xhr.send()
-
-// xhr.onload = function() {
-//     console.log(`Загружено: ${xhr.status} ${xhr.response}`);
-//   };
-  
-//   xhr.onerror = function() { // происходит, только когда запрос совсем не получилось выполнить
-//     console.log(`Ошибка соединения`);
-//   };
-  
-//   xhr.onprogress = function(event) { // запускается периодически
-//     // event.loaded - количество загруженных байт
-//     // event.lengthComputable = равно true, если сервер присылает заголовок Content-Length
-//     // event.total - количество байт всего (только если lengthComputable равно true)
-//     console.log(`Загружено ${event.loaded} из ${event.total}`);
-//   };
 
 function PromisePolifill(executor) {
     let onResolve;
@@ -142,29 +172,26 @@ function PromisePolifill(executor) {
             called = true;
         }
     };
-
+    
     this.then = (cb) => {
         onResolve = cb;
-
+        
         if (fulfilled && !called) {
             called = true;
             onResolve(value);
         }
-
+        
         return this;
     };
     
     this.catch = function(cb) {
         return this;
     };
-
+    
     executor(resolve);
 }
-// let promise = new PromisePolifill(() => {})
-// console.log(promise)
-let iy
-console.log(iy)
-new PromisePolifill((resolve) => {
+
+let prom = new PromisePolifill((resolve) => {
     let xhr = new XMLHttpRequest();
     
     xhr.open("GET", 'https://jsonplaceholder.typicode.com/todos/1')
@@ -175,7 +202,70 @@ new PromisePolifill((resolve) => {
         resolve(`Load: ${xhr.response}`);
     };
 })
-.then(val => iy = val);
-let butt = document.getElementById("button");
-let bod = document.getElementById("body")
-butt.addEventListener('click', () => console.log(iy))
+.then(val => val);
+
+
+    let first = new Promise((resolve, reject) => {    let xhr = new XMLHttpRequest();
+    
+        xhr.open("GET", `https://jsonplaceholder.typicode.com/todos/${+(Math.random()*10 + 1).toFixed()}`)
+    
+        xhr.send()
+    
+        xhr.onload = function() {
+            resolve(`Load: ${xhr.response}`);
+        };});
+
+    let second = new Promise((resolve, reject) => {    let xhr = new XMLHttpRequest();
+
+        xhr.open("GET", `https://jsonplaceholder.typicode.com/todos/${+(Math.random()*10 + 1).toFixed()}`)
+    
+        xhr.send()
+    
+        xhr.onload = function() {
+            resolve(`Load: ${xhr.response}`);
+        };});
+
+    let third = new Promise((resolve, reject) => {    let xhr = new XMLHttpRequest();
+
+        xhr.open("GET", `https://jsonplaceholder.typicode.com/todos/${+(Math.random()*10 + 1).toFixed()}`)
+    
+        xhr.send()
+    
+        xhr.onload = function() {
+            resolve(`Load: ${xhr.response}`);
+        };});
+
+    let fourth = new Promise((resolve, reject) => {    let xhr = new XMLHttpRequest();
+
+        xhr.open("GET", `https://jsonplaceholder.typicode.com/todos/${+(Math.random()*10 + 1).toFixed()}`)
+    
+        xhr.send()
+    
+        xhr.onload = function() {
+            resolve(`Load: ${xhr.response}`);
+        };});
+
+
+function promiseAll(promArr) {
+    if (!promArr.length) {
+        return new Promise((resolve) => {
+            resolve([])
+        })
+    }
+    return new Promise((resolve, reject) => {
+        let resArr = []
+        try {
+            for (let i = 0; i < promArr.length; i++) {
+                promArr[i].then(val => {resArr.push(val)
+                if (resArr.length === promArr.length && !resArr.includes(undefined)) {
+                    resolve(resArr)
+                }
+            })
+            }
+        } catch(err) {
+            reject(err);
+        }
+    })
+}
+promiseAll([first, second, third, fourth]).then(console.log).catch(console.log)
+
