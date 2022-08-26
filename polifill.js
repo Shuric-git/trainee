@@ -154,6 +154,8 @@ if (!Array.prototype.myReduce) {
 
 // .apply
 
+
+
 // .promise
 
 function PromisePolifill(executor) {
@@ -204,6 +206,7 @@ let prom = new PromisePolifill((resolve) => {
 })
 .then(val => val);
 
+// .promiseAll
 
     let first = new Promise((resolve, reject) => {    let xhr = new XMLHttpRequest();
     
@@ -267,5 +270,39 @@ function promiseAll(promArr) {
         }
     })
 }
-promiseAll([first, second, third, fourth]).then(console.log).catch(console.log)
+promiseAll([first, second, third, fourth])
+// .then(console.log).catch(console.log)
 
+// .promiseRace
+
+function promiseRace(promArr) {
+    return new Promise((resolve, reject) => {
+        let resArr = [];
+        let fulfilled = false;
+        try {
+            for (let i = 0; i < promArr.length; i++) {
+                promArr[i].then(val => {resArr.push(val)
+                if (!fulfilled && resArr.length) {
+                    resolve(resArr[0]);
+                    fulfilled = true
+                }
+            })
+            }
+        } catch(err) {
+            reject(err);
+        }
+    })
+}
+promiseRace([first, second, third, fourth])
+// .then(console.log).catch(console.log)
+
+class test {
+    constructor(name) {
+        this.name = name
+    }
+    func = () => {
+        console.log(this)
+    } 
+}
+let ttest = new test('sasha')
+ttest.func()
