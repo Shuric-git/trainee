@@ -267,5 +267,34 @@ function promiseAll(promArr) {
         }
     })
 }
-promiseAll([first, second, third, fourth]).then(console.log).catch(console.log)
+// promiseAll([first, second, third, fourth]).then(console.log).catch(console.log)
 
+// fetch(`https://jsonplaceholder.typicode.com/todos/${+(Math.random()*10 + 1).toFixed()}`).then(data => data.json(data)).then(console.log)
+
+const obj = {
+    a: {
+      b: {
+        c: {
+          d: "Привет!"
+        }
+      }
+    }
+  };
+  
+  function optionalChaining(o, path) {
+        if (typeof path === 'string') path = path.split('.')
+        let cur = path.shift()
+        if (!o[cur]) return undefined
+        if (!path.length) return o[cur]
+        return optionalChaining(o[cur], path)
+  }
+  
+  console.log("1", optionalChaining(obj, "a.b.c")); // { d: 'Привет' }
+  console.log('2', optionalChaining(obj, "a.b.c.d")); // Привет
+  console.log('3', optionalChaining(obj, "a.b.c.d.e")); // undefined
+  console.log('4', optionalChaining(obj, "b.d.a")); // undefined
+  console.log('5',
+    optionalChaining(obj, "")
+  );
+
+  fetch('https://yandex.ru/news/story/Dubl_Rashforda_pomog_Manchester_YUnajted_obygrat_Arsenal_vmatche_APL--80eefd9a69d5edca555e5b3cdc92bad9?lang=ru&from=js&wan=1&stid=dT0F9xM68EotvVX-giJn').then(data => data.json()).then(data => console.log(data))
