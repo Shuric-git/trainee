@@ -134,22 +134,26 @@ function flatFunction(deep, array) {
 // .reduce
 
 if (!Array.prototype.myReduce) {
-    Array.prototype.myReduce = function(cb = (item) => {return item}, initialValue) {
+    Array.prototype.myReduce = function(cb = (item) => {return item}, init) {
         if (!(this instanceof Array || this instanceof String)) {
             throw new Error('Called on wrong type')
         }
-        let iterator = 0;
-        if (!initialValue) {
-            iterator = 1;
-            initialValue  = this[0]
-        }    
 
-        let accumulator = initialValue;
-
-        for (iterator; iterator < this.length; iterator++) {
-            accumulator += cb(this[iterator]);
+        let iterator = 0
+        let acc
+    
+        if(!init) {
+            init = this[0]
+            iterator = 1
         }
-        return accumulator;
+    
+        acc = init
+    
+        for (iterator; iterator < this.length; iterator++) {
+            acc = cb(acc, this[iterator])
+        }
+    
+        return acc;
     }
 }
 
@@ -711,7 +715,7 @@ function deepEqual(a, b) {
     }
 
     return true
-  }
+}
   
 //   const source = {a: 1, b: {c: 1}}
 //   const test1 = {a: 1, b: {c: 1}}
@@ -728,6 +732,7 @@ function fibonacci(n) {
         fiboArr.push(fiboArr[i - 1] + fiboArr[i - 2])
     }
     return fiboArr
-  }
-  
-  console.log(fibonacci(8)) // -> [1, 1, 2, 3, 5, 8, 13, 21]
+}
+
+// console.log(fibonacci(8)) // -> [1, 1, 2, 3, 5, 8, 13, 21]
+
