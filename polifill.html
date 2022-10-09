@@ -1,13 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Polifill</title>
+    <style>
+        .container1 {
+            height: 1000px;
+            display: flex;
+            /* flex-direction: column; */
+            border: 1px solid gray;
+        }
+
+        .block {
+            width: 500px;
+            height: 500px;
+            border-radius: 25px;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .green {
+            background-color: green;
+            top: 0;
+            position: sticky;
+        }
+
+        .purple {
+            background-color: purple;
+        }
+
+        .black {
+            background-color: black;
+        }
+
+        .orange {
+            background-color: orange;
+        }
+    </style>
 </head>
+
 <body id="body">
     <button id="button">button</button>
+    <!-- <div class="container1"> -->
+    <!-- <div class="red block"></div> -->
+    <!-- <div class="green block"></div> -->
+    <!-- </div> -->
+    <!-- <div class="container2"> -->
+    <!-- <div class="purple block"></div> -->
+    <!-- <div class="black block"></div> -->
+    <!-- <div class="orange block"></div> -->
+    <!-- </div> -->
+    <input type="range">
     <script defer src="polifill.js"></script>
 </body>
+
 </html>
