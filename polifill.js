@@ -81,6 +81,62 @@ if (!Function.prototype.myCall) {
     }
 }
 
+Function.prototype.ucall = function(context, ...args) {
+    context.this = this;
+    context.this(args)
+    delete contex.this
+}
+let contex = {
+    'here is': 'context'
+}
+function funcWithoutContext() {
+    console.log(this)
+}
+funcWithoutContext.ucall(contex)
+
+// .flat
+if (!Array.prototype.uflat) {
+    Array.prototype.uflat = function func(deep = 1) {
+        if (!(this instanceof Array)) {
+            throw new Error('eto ne array')
+        }
+        if (typeof deep !== 'number') {
+            throw new Error(`${deep} is not a number`)
+        }
+
+        let deepArr = [];
+    
+        deep--
+    
+        for (let i = 0; i < this.length; i++) {
+            if (this[i] instanceof Array && deep >= 0) {
+                deepArr.push(...this[i].uflat(deep))
+            }
+            else {
+                deepArr.push(this[i])
+            }
+        }
+        
+        return deepArr;
+    
+        // (function flatter(arr) {
+        //     for (let i = 0; i < arr.length; i++) {
+        //         if (arr[i] instanceof Array && deep >= 0) {
+        //             deep--
+        //             flatter(arr[i])
+        //         } else {
+        //             deepArr.push(arr[i])
+        //         }
+        //     }
+        // })(this)
+    
+        // return deepArr;
+    }
+}
+
+const fobo = [1, [[1, 2], 3], 5, [8, 13], 21]
+
+// console.log(fobo.uflat(1))
 if (!Array.prototype.myFlat) {
     Array.prototype.myFlat = function(deep) {
         if (!(this instanceof Array || this instanceof String)) {
@@ -735,4 +791,5 @@ function fibonacci(n) {
 }
 
 // console.log(fibonacci(8)) // -> [1, 1, 2, 3, 5, 8, 13, 21]
+
 
